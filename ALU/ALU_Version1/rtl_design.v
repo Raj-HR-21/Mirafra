@@ -210,7 +210,7 @@ always@(*) begin
 
         endcase
 
-        end //end if(IN_VALID == 'b01 || IN_VALID == 'b11)
+        end //end if(IN_VALID == 'b01 )
 
         else if(IN_VALID_1 == 'b10) begin
         case(CMD_1)
@@ -246,7 +246,7 @@ always@(*) begin
 
         endcase
 
-        end //end if(IN_VALID == 'b10 || IN_VALID == 'b11)
+        end //end if(IN_VALID == 'b10 )
 
         else begin
                 RESULT_REG = {RESULT_WIDTH{1'b0}};
@@ -307,7 +307,7 @@ always@(*) begin
                         E_1 = 'b0;
                 end
         endcase
-        end //end if(IN_VALID == 'b01 || IN_VALID == 'b11)
+        end //end if(IN_VALID == 'b01 )
 
         else if(IN_VALID_1 == 'b10) begin
         case(CMD_1)
@@ -326,7 +326,7 @@ always@(*) begin
                 end
         endcase
 
-        end //end if(IN_VALID == 'b10 || IN_VALID == 'b11)
+        end //end if(IN_VALID == 'b10 )
 
         else begin
                         RESULT_REG = {RESULT_WIDTH{1'b0}};
