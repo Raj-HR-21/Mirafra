@@ -34,7 +34,7 @@ class arith_both_op extends alu_sequence;
 		super.new(name);
 	endfunction
 	virtual task body;
-		repeat(`no_trxn) begin
+		repeat(10) begin
 		`uvm_do_with(req, {req.MODE==1; req.CMD inside {[0:3],[8:10]}; req.INP_VALID inside {0,3};})
 		end
 	endtask
@@ -46,7 +46,7 @@ class logical_both_op extends alu_sequence;
 		super.new(name);
 	endfunction
 	virtual task body;
-		repeat(`no_trxn) begin
+		repeat(10) begin
 		`uvm_do_with(req, {req.MODE==0; req.CMD inside {[0:5],[12:13]}; req.INP_VALID inside {0,3};})
 		end
 	endtask
@@ -58,7 +58,7 @@ class arith_opa extends alu_sequence;
 		super.new(name);
 	endfunction
 	virtual task body;
-		repeat(2) begin
+		repeat(5) begin
 		`uvm_do_with(req, {req.MODE==1; req.CMD inside {4,5}; req.INP_VALID inside {0,1,3};})
 		end
 	endtask
@@ -70,7 +70,7 @@ class arith_opb extends alu_sequence;
 		super.new(name);
 	endfunction
 	virtual task body;
-		repeat(2) begin
+		repeat(5) begin
 		`uvm_do_with(req, {req.MODE==1; req.CMD inside {6,7}; req.INP_VALID inside {0,2,3};})
 		end
 	endtask
@@ -82,7 +82,7 @@ class logical_opa extends alu_sequence;
 		super.new(name);
 	endfunction
 	virtual task body;
-		repeat(2) begin
+		repeat(5) begin
 		`uvm_do_with(req, {req.MODE==0; req.CMD inside {6,8,9}; req.INP_VALID inside {0,1,3};})
 		end
 	endtask
@@ -94,7 +94,7 @@ class logical_opb extends alu_sequence;
 		super.new(name);
 	endfunction
 	virtual task body;
-		repeat(10) begin
+		repeat(5) begin
 		`uvm_do_with(req, {req.MODE==0; req.CMD inside {7,10,11}; req.INP_VALID inside {0,2,3};})
 		end
 	endtask
@@ -106,7 +106,7 @@ class multiplication_op extends alu_sequence;
 		super.new(name);
         endfunction
 	virtual task body;
-		repeat(2) begin
+		repeat(10) begin
 		`uvm_do_with(req, {req.MODE==1; req.CMD inside {9,10}; req.INP_VALID inside {0,3};})
 		end
 	endtask
@@ -118,7 +118,7 @@ class rotate_op extends alu_sequence;
 		super.new(name);
 	endfunction
 	virtual task body;
-		repeat(2) begin
+		repeat(5) begin
 		`uvm_do_with(req, {req.MODE==0;  req.CMD inside {12,13}; req.INP_VALID inside {0,3};});
 		end
 	endtask
@@ -167,7 +167,7 @@ class arith_op extends alu_sequence;
 	endfunction
 	virtual task body;
 		repeat(10) begin
-		`uvm_do_with(req, {req.MODE==1; req.INP_VALID inside {[0:3]};})
+		`uvm_do_with(req, {req.MODE==1; req.INP_VALID inside {[0:3]}; req.CMD inside {[0:15]}; })
 		end
 	endtask
 endclass
@@ -179,7 +179,7 @@ class logical_op extends alu_sequence;
 	endfunction
 	virtual task body;
 		repeat(10) begin
-		`uvm_do_with(req, {req.MODE==0; req.INP_VALID inside {[0:3]};})
+		`uvm_do_with(req, {req.MODE==0; req.INP_VALID inside {[0:3]}; req.CMD inside {[0:15]}; })
 		end
 	endtask
 endclass
@@ -204,7 +204,7 @@ class regression extends alu_sequence;
 		super.new(name);
 	endfunction
 	virtual task body;
-		repeat(`no_trxn) begin
+		repeat(10) begin
 		`uvm_do(arith_both)
 		`uvm_do(logical_both)
 		`uvm_do(arith_a)
