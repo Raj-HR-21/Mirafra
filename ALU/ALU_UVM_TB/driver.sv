@@ -3,13 +3,10 @@
 class alu_driver extends uvm_driver#(alu_seq_item);
 	`uvm_component_utils(alu_driver)
 	virtual alu_interface vif;
-	//Analysis port to send data to scb and coverage
-	//uvm_analysis_port#(alu_seq_item) drv_port;
         int trxn;
 
 	function new(string name = "alu_driver", uvm_component parent = null);
 		super.new(name,parent);
-		//drv_port = new("drv_port", this);
 	endfunction
 	
 	function void build_phase(uvm_phase phase);
@@ -22,28 +19,23 @@ class alu_driver extends uvm_driver#(alu_seq_item);
 	function bit both_op();
 		if(req.MODE == 1) begin
 			if (req.CMD inside {0,1,2,3,8,9,10}) begin
-				//$display("funct if m=1");
 				return 1;
 				end
 			else begin
-				//$display("funct else m=1");
 				return 0;
 				end
 			end
 		if(req.MODE == 0) begin 
 			if (req.CMD inside {[0:5],12,13}) begin
-				//$display("funct if m=0");
 				return 1;
 				end
 			else begin
-				//$display("funct else m=0");
 				return 0;
 				end
 			end
 	endfunction : both_op
 
 	task drive_to_dut();
-		//vif.driver_cb.RESET	<= req.RESET;
 		vif.driver_cb.CE 	<= req.CE;
 		vif.driver_cb.CMD	<= req.CMD;
 		vif.driver_cb.MODE	<= req.MODE;
@@ -83,18 +75,15 @@ class alu_driver extends uvm_driver#(alu_seq_item);
 
 				else begin  // got 11
 					drive_to_dut();
-					//drv_port.write(req);
 					`uvm_info("DRV_11 : ", $sformatf("RESET = %b | CE = %0d| MODE = %b| CMD = %0d| INP_VALID = %0d| OPA = %0d| OPB = %0d| CIN = %b", vif.RESET, req.CE, req.MODE, req.CMD, req.INP_VALID, req.OPA, req.OPB, req.CIN), UVM_LOW);
 					req.CE.rand_mode(1);
 					req.CMD.rand_mode(1);
 					req.MODE.rand_mode(1);
 
 					if(req.MODE==1 && (req.CMD inside {9,10})) begin
-						//$display("\t HIT BREAK drv : mul");
 						repeat(4)@(vif.driver_cb); 
 					end
 					else begin
-						//$display("\t HIT BREAK drv : other");
 						repeat(3)@(vif.driver_cb); 
 					end
 
@@ -108,15 +97,12 @@ class alu_driver extends uvm_driver#(alu_seq_item);
 		else begin // 
 			drive_to_dut();
 			`uvm_info("DRV : ", $sformatf("RESET = %b | CE = %b| MODE = %b| CMD = %0d| INP_VALID = %0d| OPA = %0d| OPB = %0d| CIN = %b",vif.RESET, req.CE, req.MODE, req.CMD, req.INP_VALID, req.OPA, req.OPB, req.CIN), UVM_LOW);
-			//drv_port.write(req);
-			//$display("\t\t got 11 out of 16 cycle");
+
 			if(req.MODE==1 && (req.CMD inside {9,10})) begin
-				//$display("drv : mul");				
 				repeat(4)@(vif.driver_cb); 
 				
 			end
 			else begin
-				//$display("drv : other");
 				repeat(3)@(vif.driver_cb); 
 			end
 
