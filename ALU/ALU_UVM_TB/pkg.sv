@@ -10,7 +10,7 @@ package alu_pkg;
 	`include "monitor.sv"
 	`include "agent.sv"
 	`include "scoreboard.sv"
-	`include "subscriber.sv"
+	`include "coverage.sv"
 	`include "env.sv"
 	`include "test.sv"
 
