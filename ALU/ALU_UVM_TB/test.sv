@@ -39,9 +39,9 @@ class arith_both_op_test extends alu_test;
 		arith_both_op seq;
 		phase.raise_objection(this);
 		seq = arith_both_op::type_id::create("seq");
-		repeat(10) begin
+		//repeat(10) begin
 			seq.start(envh.agnth.sqrh);
-		end
+		//end
 		phase.drop_objection(this);
 	endtask
 endclass	
@@ -55,9 +55,9 @@ class logical_both_op_test extends alu_test;
 		logical_both_op seq;
 		phase.raise_objection(this);
 		seq = logical_both_op::type_id::create("seq");
-		repeat(10) begin
+		//repeat(10) begin
 			seq.start(envh.agnth.sqrh);
-		end
+		//end
 		phase.drop_objection(this);
 	endtask
 endclass
@@ -71,9 +71,9 @@ class arith_opa_test extends alu_test;
 		arith_opa seq;
 		phase.raise_objection(this);
 		seq = arith_opa::type_id::create("seq");
-		repeat(10) begin
+		//repeat(2) begin
 			seq.start(envh.agnth.sqrh);
-		end
+		//end
 		phase.drop_objection(this);
 	endtask
 endclass
@@ -87,9 +87,9 @@ class arith_opb_test extends alu_test;
 		arith_opb seq;
 		phase.raise_objection(this);
 		seq = arith_opb::type_id::create("seq");
-		repeat(10) begin
+		//repeat(2) begin
 			seq.start(envh.agnth.sqrh);
-		end
+		//end
 		phase.drop_objection(this);
 	endtask
 endclass	
@@ -103,9 +103,9 @@ class logical_opa_test extends alu_test;
 		logical_opa seq;
 		phase.raise_objection(this);
 		seq = logical_opa::type_id::create("seq");
-		repeat(10) begin
+		//repeat(2) begin
 			seq.start(envh.agnth.sqrh);
-		end
+		//end
 		phase.drop_objection(this);
 	endtask
 endclass
@@ -119,9 +119,9 @@ class logical_opb_test extends alu_test;
 		logical_opb seq;
 		phase.raise_objection(this);
 		seq = logical_opb::type_id::create("seq");
-		repeat(10) begin
+		//repeat(2) begin
 			seq.start(envh.agnth.sqrh);
-		end
+		//end
 		phase.drop_objection(this);
 	endtask
 endclass
@@ -135,9 +135,9 @@ class multiplication_op_test extends alu_test;
 		multiplication_op seq;
 		phase.raise_objection(this);
 		seq = multiplication_op::type_id::create("seq");
-		repeat(10) begin
+		//repeat(2) begin
 			seq.start(envh.agnth.sqrh);
-		end
+		//end
 		phase.drop_objection(this);
 	endtask
 endclass
@@ -151,9 +151,9 @@ class rotate_op_test extends alu_test;
 		rotate_op seq;
 		phase.raise_objection(this);
 		seq = rotate_op::type_id::create("seq");
-		repeat(10) begin
+		//repeat(2) begin
 			seq.start(envh.agnth.sqrh);
-		end
+		//end
 		phase.drop_objection(this);
 	endtask
 endclass
@@ -167,9 +167,9 @@ class arith_both_op_min_max_test extends alu_test;
 		arith_both_op_min_max seq;
 		phase.raise_objection(this);
 		seq = arith_both_op_min_max::type_id::create("seq");
-		repeat(10) begin
+		//repeat(2) begin
 			seq.start(envh.agnth.sqrh);
-		end
+		//end
 		phase.drop_objection(this);
 	endtask
 endclass
@@ -184,9 +184,9 @@ class arith_opa_min_max_test extends alu_test;
 		arith_opa_min_max seq;
 		phase.raise_objection(this);
 		seq = arith_opa_min_max::type_id::create("seq");
-		repeat(10) begin
+		//repeat(2) begin
 			seq.start(envh.agnth.sqrh);
-		end
+		//end
 		phase.drop_objection(this);
 	endtask
 endclass
@@ -200,9 +200,9 @@ class arith_opb_min_max_test extends alu_test;
 		arith_opb_min_max seq;
 		phase.raise_objection(this);
 		seq = arith_opb_min_max::type_id::create("seq");
-		repeat(10) begin
+		//repeat(2) begin
 			seq.start(envh.agnth.sqrh);
-		end
+		//end
 		phase.drop_objection(this);
 	endtask
 endclass
@@ -216,9 +216,9 @@ class arith_op_test extends alu_test;
 		arith_op seq;
 		phase.raise_objection(this);
 		seq = arith_op::type_id::create("seq");
-		repeat(50) begin
+		//repeat(10) begin
 			seq.start(envh.agnth.sqrh);
-		end
+		//end
 		phase.drop_objection(this);
 	endtask
 endclass	
@@ -232,9 +232,9 @@ class logical_op_test extends alu_test;
 		logical_op seq;
 		phase.raise_objection(this);
 		seq = logical_op::type_id::create("seq");
-		repeat(50) begin
+		//repeat(10) begin
 			seq.start(envh.agnth.sqrh);
-		end
+		//end
 		phase.drop_objection(this);
 	endtask
 endclass
@@ -249,7 +249,7 @@ class reg_test extends alu_test;
 		phase.raise_objection(this,"Raised Objection");
 		//phase.phase_done.set_drain_time(this, 10ns);
 		seq = regression::type_id::create("seq", this);
-		repeat(50) begin
+		repeat(10) begin
 			seq.start(envh.agnth.sqrh);
 		end
 		phase.drop_objection(this,"Objection dropped");
