@@ -1,4 +1,4 @@
-// interface
+////---- INTERFACE ----////
 interface alu_interface (input logic CLK, input logic RESET);
 	//INPUTS
 	
