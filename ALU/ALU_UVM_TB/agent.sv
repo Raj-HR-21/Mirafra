@@ -12,12 +12,11 @@ class alu_agent extends uvm_agent;
 
 	function void build_phase(uvm_phase phase);
 		super.build_phase(phase);
+		monh = alu_monitor::type_id::create("monh", this);
 		if(get_is_active() == UVM_ACTIVE) begin
 			drvh = alu_driver::type_id::create("drvh", this);
 			sqrh = alu_sequencer::type_id::create("sqrh", this);
 		end
-		monh = alu_monitor::type_id::create("monh", this);
-
 	endfunction
 
 	function void connect_phase(uvm_phase phase);
