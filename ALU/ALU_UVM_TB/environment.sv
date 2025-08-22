@@ -23,7 +23,6 @@ class alu_env extends uvm_env;
 		super.connect_phase(phase);
 		agnth.monh.mon_port.connect(scbh.item_collected_port);
 
-//		agnth.drvh.drv_port.connect(cvgh.drv_item);
 		agnth.monh.mon_port.connect(cvgh.mon_imp_port);
 
 	endfunction
