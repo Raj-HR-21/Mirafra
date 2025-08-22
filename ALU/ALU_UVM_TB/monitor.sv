@@ -15,7 +15,6 @@ class alu_monitor extends uvm_monitor;
 
 	function void build_phase(uvm_phase phase);
 		super.build_phase(phase);
-		//mon_item = alu_seq_item::type_id::create("mon_item", this);
 		if(!uvm_config_db#(virtual alu_interface)::get(this, "" , "vif", vif)) begin
 			`uvm_fatal(get_type_name(), $sformatf("NO VIF"))
 		end
@@ -60,19 +59,13 @@ class alu_monitor extends uvm_monitor;
 		if(both_op() &&(vif.monitor_cb.INP_VALID==2'b01 || vif.monitor_cb.INP_VALID==2'b10)) begin //both_op -01-10
 			if(vif.monitor_cb.MODE==1 &&(vif.monitor_cb.CMD==9 || vif.monitor_cb.CMD==10)) begin
 				repeat(2)@(vif.monitor_cb);
-	//			$display("MON_MUL");
 				capture_in();
 				capture_out();
-				//$display("\n\n IN WRITE MON 1 \n\n");
-				//mon_port.write(mon_item);
 			end
 			else begin
 				repeat(1)@(vif.monitor_cb);
-	//			$display("MON others");
 				capture_in();
 				capture_out();
-				//$display("\n\n IN WRITE MON 2 \n\n");
-				//mon_port.write(mon_item);
 			end
 			for(int i=1; i<16; i++) begin 
 				repeat(1) @(vif.monitor_cb);
@@ -80,8 +73,6 @@ class alu_monitor extends uvm_monitor;
 					repeat(1) @(vif.monitor_cb);
 				end
 			
-				else repeat(0)@(vif.monitor_cb);
-
 				if(vif.monitor_cb.INP_VALID!=2'b11) begin //not 11
 					if(vif.monitor_cb.MODE==1 &&(vif.monitor_cb.CMD==9 || vif.monitor_cb.CMD==10)) begin repeat(2)@(vif.monitor_cb); end
 					else begin repeat(1) @(vif.monitor_cb); end
@@ -92,14 +83,12 @@ class alu_monitor extends uvm_monitor;
 				else begin // got 11
 					if(vif.monitor_cb.MODE==1 &&(vif.monitor_cb.CMD==9 || vif.monitor_cb.CMD==10)) begin
 						repeat(2)@(vif.monitor_cb);
-			//			$display("MON_MUL");
 						capture_in();
 						capture_out();
 						mon_port.write(mon_item);
 					end
 					else begin
 						repeat(1)@(vif.monitor_cb);
-			//			$display("MON others");
 						capture_in();
 						capture_out();
 						mon_port.write(mon_item);
@@ -115,14 +104,12 @@ class alu_monitor extends uvm_monitor;
 		else begin //other conditions
 			if(vif.monitor_cb.MODE==1 &&(vif.monitor_cb.CMD==9 || vif.monitor_cb.CMD==10)) begin
 				repeat(2)@(vif.monitor_cb);
-	//			$display("MON_MUL");
 				capture_in();
 				capture_out();
 				mon_port.write(mon_item);
 			end
 			else begin
 				repeat(1)@(vif.monitor_cb);
-	//			$display("MON others");
 				capture_in();
 				capture_out();
 				mon_port.write(mon_item);
@@ -132,7 +119,6 @@ class alu_monitor extends uvm_monitor;
 	repeat(1)@(vif.monitor_cb); 
 	end //forever
 	endtask
-
 
 endclass
 
