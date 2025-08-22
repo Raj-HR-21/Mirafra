@@ -23,7 +23,6 @@ class alu_scb extends uvm_scoreboard;
 		`uvm_info("scoreboard", $sformatf("DATA SENT TO QUEUE"), UVM_LOW)
 		`uvm_info("SCB_M: ", $sformatf("CE = %b| MODE = %b| CMD = %0d| INP_VALID = %0d| OPA = %0d| OPB = %0d| CIN = %b", item.CE, item.MODE, item.CMD, item.INP_VALID, item.OPA, item.OPB, item.CIN), UVM_LOW)
 		`uvm_info("SCB_M:", $sformatf("ERR = %b| COUT = %b| OFLOW = %b| E = %b| G = %b| L = %b| RES = %0d", item.ERR, item.COUT, item.OFLOW, item.E, item.G, item.L, item.RES), UVM_LOW)
-
 	endfunction //write
 
 	virtual task run_phase(uvm_phase phase);
@@ -58,141 +57,275 @@ class alu_scb extends uvm_scoreboard;
 	endfunction
 
 	function void ref_model(alu_seq_item expt);
-	
 		localparam rotate_amt = $clog2(`DATA_WIDTH);
 		reg [rotate_amt-1 : 0] OPB_REG;
 		bit [5:0]wait_16 = 0;
 		
-
-		if(expt.RESET == 1) begin
-			expt.RES = 'bz;
-			expt.ERR = 'bz;	
-			expt.COUT = 'bz;
-			expt.OFLOW = 'bz;
-			expt.E = 'bz;
-			expt.G = 'bz;
-			expt.L = 'bz;
+		if(expt.INP_VALID==0) begin
+				expt.RES = 'bz;
+				expt.ERR = 'b1;	
+				expt.COUT = 'bz;
+				expt.OFLOW = 'bz;
+				expt.E = 'bz;
+				expt.G = 'bz;
+				expt.L = 'bz;
 		end
-		else if(expt.CE == 0) begin
-			expt.RES = temp_res;
-			expt.ERR = temp_err;
-			expt.COUT = temp_cout;
-			expt.OFLOW = temp_oflow;
-			expt.E = temp_e;
-			expt.G = temp_g;
-			expt.L = temp_l;
-		end
+		if(expt.INP_VALID==1 || expt.INP_VALID==3) begin //OPA
+			if(expt.RESET == 1) begin
+				expt.RES = 'bz;
+				expt.ERR = 'bz;	
+				expt.COUT = 'bz;
+				expt.OFLOW = 'bz;
+				expt.E = 'bz;
+				expt.G = 'bz;
+				expt.L = 'bz;
+			end
+			else if(expt.CE == 0) begin
+				expt.RES = temp_res;
+				expt.ERR = temp_err;
+				expt.COUT = temp_cout;
+				expt.OFLOW = temp_oflow;
+				expt.E = temp_e;
+				expt.G = temp_g;
+				expt.L = temp_l;
+			end
+			
+			else if(expt.CE == 1 && expt.RESET == 0) begin  //CE=1, RESET=0
+				expt.RES = 'bz;
+				expt.ERR = 'bz;	
+				expt.COUT = 'bz;
+				expt.OFLOW = 'bz;
+				expt.E = 'bz;
+				expt.G = 'bz;
+				expt.L = 'bz;
+				if(expt.MODE == 1) begin // mode 1
+					case(expt.CMD)
+						4: begin
+							expt.RES = expt.OPA + 1;
+							expt.COUT = expt.RES[`DATA_WIDTH];
+						end
+						5: begin
+							expt.RES = expt.OPA - 1;
+							expt.OFLOW = (expt.OPA < 1) ? 1 : 0;
+						end
+						default: begin
+							expt.RES = {`DATA_WIDTH{1'bz}};
+							expt.ERR = 1'b1;
+						end
+					endcase
+					temp_res = expt.RES;
+					temp_err = expt.ERR;
+					temp_cout = expt.COUT;
+					temp_oflow = expt.OFLOW;
+					temp_e = expt.E;
+					temp_g = expt.G;
+					temp_l = expt.L;
+				end //mode 1
+				if(expt.MODE == 0) begin // mode 0
+					case(expt.CMD)
+							6: expt.RES = ~(expt.OPA);
+							8: expt.RES = (expt.OPA >> 1);
+							9: expt.RES = (expt.OPA << 1);
+							default: begin
+							expt.RES = {`DATA_WIDTH{1'bz}};
+							expt.ERR = 1'b1;
+						end
+						endcase
+					
+					temp_res = expt.RES;
+					temp_err = expt.ERR;
+					temp_cout = expt.COUT;
+					temp_oflow = expt.OFLOW;
+					temp_e = expt.E;
+					temp_g = expt.G;
+					temp_l = expt.L;
+				end //mode 0
+			end  // CE=1, RESET=0
+		end //OPA
 		
-		else if(expt.CE == 1 && expt.RESET == 0) begin
-			expt.RES = {`DATA_WIDTH{1'bz}};
-			expt.ERR = 'bz;	
-			expt.COUT = 'bz;
-			expt.OFLOW = 'bz;
-			expt.E = 'bz;
-			expt.G = 'bz;
-			expt.L = 'bz;
+		if(expt.INP_VALID==2 || expt.INP_VALID==3) begin  //OPB
+			if(expt.RESET == 1) begin
+				expt.RES = 'bz;
+				expt.ERR = 'bz;	
+				expt.COUT = 'bz;
+				expt.OFLOW = 'bz;
+				expt.E = 'bz;
+				expt.G = 'bz;
+				expt.L = 'bz;
+			end
+			else if(expt.CE == 0) begin
+				expt.RES = temp_res;
+				expt.ERR = temp_err;
+				expt.COUT = temp_cout;
+				expt.OFLOW = temp_oflow;
+				expt.E = temp_e;
+				expt.G = temp_g;
+				expt.L = temp_l;
+			end
+			
+			else if(expt.CE == 1 && expt.RESET == 0) begin //CE=1, RESET=0
+				expt.RES = 'bz;
+				expt.ERR = 'bz;	
+				expt.COUT = 'bz;
+				expt.OFLOW = 'bz;
+				expt.E = 'bz;
+				expt.G = 'bz;
+				expt.L = 'bz;
+				if(expt.MODE == 1) begin // mode 1
+					case(expt.CMD)
+						6: begin
+							expt.RES = expt.OPB + 1;
+							expt.COUT = expt.RES[`DATA_WIDTH];
+						end
+						7: begin
+							expt.RES = expt.OPB - 1;
+							expt.OFLOW = (expt.OPB < 1) ? 1 : 0;
+						end
+						default: begin
+							expt.RES = {`DATA_WIDTH{1'bz}};
+							expt.ERR = 1'b1;
+						end
+					endcase
+					temp_res = expt.RES;
+					temp_err = expt.ERR;
+					temp_cout = expt.COUT;
+					temp_oflow = expt.OFLOW;
+					temp_e = expt.E;
+					temp_g = expt.G;
+					temp_l = expt.L;
 
-			if(expt.MODE == 1) begin
-				case(expt.CMD)
-					0: begin
-						expt.RES = expt.OPA + expt.OPB;
-						expt.COUT = expt.RES[`DATA_WIDTH];
-					end
-					1: begin
-						expt.RES = expt.OPA - expt.OPB;
-						expt.OFLOW = (expt.OPA < expt.OPB);
-					end
-					2: begin
-						expt.RES = expt.OPA + expt.OPB + expt.CIN;
-						expt.COUT = expt.RES[`DATA_WIDTH];
-					end
-					3: begin
-						expt.RES = expt.OPA - expt.OPB - expt.CIN;
-						expt.OFLOW = (expt.OPA < expt.OPB);
-					end
-					4: begin
-						expt.RES = expt.OPA + 1;
-						expt.COUT = expt.RES[`DATA_WIDTH];
-					end
-					5: begin
-						expt.RES = expt.OPA - 1;
-						expt.OFLOW = (expt.OPA < 1) ? 1 : 0;
-					end
-					6: begin
-						expt.RES = expt.OPB + 1;
-						expt.COUT = expt.RES[`DATA_WIDTH];
-					end
-					7: begin
-						expt.RES = expt.OPB - 1;
-						expt.OFLOW = (expt.OPB < 1) ? 1 : 0;
-					end
-					8: begin
-						expt.RES = {`DATA_WIDTH {1'bz}};
-						expt.L = (expt.OPA < expt.OPB) ? 1 : 0;
-						expt.G = (expt.OPA > expt.OPB) ? 1 : 0;
-						expt.E = (expt.OPA == expt.OPB) ? 1 : 0;;
-					end
-					9: begin
-						expt.RES = (expt.OPA+1) * (expt.OPB + 1);
-					end
-					10: begin
-						expt.RES = (expt.OPA << 1) * expt.OPB;
-					end
-					default: begin
-						expt.RES = `DATA_WIDTH'bz;
-						expt.ERR = 1;
-					end
-				endcase
-				temp_res = expt.RES;
-				temp_err = expt.ERR;
-				temp_cout = expt.COUT;
-				temp_oflow = expt.OFLOW;
-				temp_e = expt.E;
-				temp_g = expt.G;
-				temp_l = expt.L;
-			end //mode = 1
-			else begin //mode = 0
-				case(expt.CMD)
-					1: expt.RES = ~(expt.OPA & expt.OPB);
-					2: expt.RES = expt.OPA | expt.OPB;
-					0: expt.RES = expt.OPA & expt.OPB;
-					3: expt.RES = ~(expt.OPA | expt.OPB);
-					4: expt.RES = expt.OPA ^ expt.OPB;
-					5: expt.RES = ~(expt.OPA ^ expt.OPB);
-					6: expt.RES = ~(expt.OPA);
-					7: expt.RES = ~(expt.OPB);
-					8: expt.RES = (expt.OPA >> 1);
-					9: expt.RES = (expt.OPA << 1);
-					10:expt.RES = (expt.OPB >> 1);
-					11:expt.RES = (expt.OPB << 1);
-					12: begin
-						OPB_REG = expt.OPB[rotate_amt-1 : 0];
-						expt.RES[`DATA_WIDTH-1 :0] = {1'b0, (expt.OPA << OPB_REG) | (expt.OPA >>(`DATA_WIDTH-OPB_REG))};
-						expt.ERR = (|(expt.OPB[`DATA_WIDTH-1 : rotate_amt]));
-					end
-					13: begin
-						OPB_REG = expt.OPB[rotate_amt-1 : 0];
-						expt.RES = {1'b0, (expt.OPA >> OPB_REG) | (expt.OPA<<(`DATA_WIDTH-OPB_REG))};
-						expt.ERR = (|(expt.OPB[`DATA_WIDTH-1 : rotate_amt]));
-					end
-					default: begin
-						expt.RES = {`DATA_WIDTH{1'bz}};;
-						expt.ERR = 1;
-					end
-				endcase
-				temp_res = expt.RES;
-				temp_err = expt.ERR;
-				temp_cout = expt.COUT;
-				temp_oflow = expt.OFLOW;
-				temp_e = expt.E;
-				temp_g = expt.G;
-				temp_l = expt.L;
-			end //mode = 0
-		end // CE=1, RESET=0
-		
-		endfunction : ref_model
+				end //mode 1
+				if(expt.MODE == 0) begin // mode 0
+					case(expt.CMD)
+						7: expt.RES = ~(expt.OPB);
+						10:expt.RES = (expt.OPB >> 1);
+						11:expt.RES = (expt.OPB << 1);
+						default: begin
+							expt.RES = {`DATA_WIDTH{1'bz}};
+							expt.ERR = 1'b1;
+						end
+					endcase
+					temp_res = expt.RES;
+					temp_err = expt.ERR;
+					temp_cout = expt.COUT;
+					temp_oflow = expt.OFLOW;
+					temp_e = expt.E;
+					temp_g = expt.G;
+					temp_l = expt.L;
+
+				end //mode 0
+			end  // CE=1, RESET=0
+		end  //OPB
+
+		if(expt.INP_VALID==3) begin //both_oprnd
+			if(expt.RESET == 1) begin
+				expt.RES = 'bz;
+				expt.ERR = 'bz;	
+				expt.COUT = 'bz;
+				expt.OFLOW = 'bz;
+				expt.E = 'bz;
+				expt.G = 'bz;
+				expt.L = 'bz;
+			end
+			else if(expt.CE == 0) begin
+				expt.RES = temp_res;
+				expt.ERR = temp_err;
+				expt.COUT = temp_cout;
+				expt.OFLOW = temp_oflow;
+				expt.E = temp_e;
+				expt.G = temp_g;
+				expt.L = temp_l;
+			end
+			
+			else if(expt.CE == 1 && expt.RESET == 0) begin  //CE=1, RESET=0
+				expt.RES = 'bz;
+				expt.ERR = 'bz;	
+				expt.COUT = 'bz;
+				expt.OFLOW = 'bz;
+				expt.E = 'bz;
+				expt.G = 'bz;
+				expt.L = 'bz;
+				if(expt.MODE == 1) begin
+					case(expt.CMD)
+						0: begin
+							expt.RES = expt.OPA + expt.OPB;
+							expt.COUT = expt.RES[`DATA_WIDTH];
+						end
+						1: begin
+							expt.RES = expt.OPA - expt.OPB;
+							expt.OFLOW = (expt.OPA < expt.OPB);
+						end
+						2: begin
+							expt.RES = expt.OPA + expt.OPB + expt.CIN;
+							expt.COUT = expt.RES[`DATA_WIDTH];
+						end
+						3: begin
+							expt.RES = expt.OPA - expt.OPB - expt.CIN;
+							expt.OFLOW = (expt.OPA < expt.OPB);
+						end
+
+						8: begin
+							expt.RES = {`DATA_WIDTH {1'bz}};
+							expt.L = (expt.OPA < expt.OPB) ? 1 : 0;
+							expt.G = (expt.OPA > expt.OPB) ? 1 : 0;
+							expt.E = (expt.OPA == expt.OPB) ? 1 : 0;;
+						end
+						9: begin
+							expt.RES = (expt.OPA+1) * (expt.OPB + 1);
+						end
+						10: begin
+							expt.RES = (expt.OPA << 1) * expt.OPB;
+						end
+						default: begin
+							expt.RES = {`DATA_WIDTH{1'bz}};
+							expt.ERR = 1'b1;
+						end
+					endcase
+					temp_res = expt.RES;
+					temp_err = expt.ERR;
+					temp_cout = expt.COUT;
+					temp_oflow = expt.OFLOW;
+					temp_e = expt.E;
+					temp_g = expt.G;
+					temp_l = expt.L;
+				end //mode = 1
+				else begin //mode = 0
+					case(expt.CMD)
+						1: expt.RES = ~(expt.OPA & expt.OPB);
+						2: expt.RES = expt.OPA | expt.OPB;
+						0: expt.RES = expt.OPA & expt.OPB;
+						3: expt.RES = ~(expt.OPA | expt.OPB);
+						4: expt.RES = expt.OPA ^ expt.OPB;
+						5: expt.RES = ~(expt.OPA ^ expt.OPB);
+						12: begin
+							OPB_REG = expt.OPB[rotate_amt-1 : 0];
+							expt.RES[`DATA_WIDTH-1 :0] = {1'b0, (expt.OPA << OPB_REG) | (expt.OPA >>(`DATA_WIDTH-OPB_REG))};
+							expt.ERR = (|(expt.OPB[`DATA_WIDTH-1 : rotate_amt]));
+						end
+						13: begin
+							OPB_REG = expt.OPB[rotate_amt-1 : 0];
+							expt.RES = {1'b0, (expt.OPA >> OPB_REG) | (expt.OPA<<(`DATA_WIDTH-OPB_REG))};
+							expt.ERR = (|(expt.OPB[`DATA_WIDTH-1 : rotate_amt]));
+						end
+						default: begin
+							expt.RES = {`DATA_WIDTH{1'bz}};
+							expt.ERR = 1'b1;
+						end
+					endcase
+					temp_res = expt.RES;
+					temp_err = expt.ERR;
+					temp_cout = expt.COUT;
+					temp_oflow = expt.OFLOW;
+					temp_e = expt.E;
+					temp_g = expt.G;
+					temp_l = expt.L;
+				end //mode = 0
+			end  // CE=1, RESET=0
+		end //both_oprnd
 
 		
+	endfunction : ref_model
+
 		function void compare(alu_seq_item resp, alu_seq_item expt);
 
 			result_match = (resp.RES === expt.RES);
