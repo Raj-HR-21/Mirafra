@@ -8,4 +8,3 @@ class alu_sequencer extends uvm_sequencer#(alu_seq_item);
 	endfunction
 	
 endclass
-
