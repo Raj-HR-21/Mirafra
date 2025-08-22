@@ -27,7 +27,6 @@ class alu_driver extends uvm_driver#(alu_seq_item);
 	endfunction : both_op
 
 	task drive_to_dut();
-		//vif.driver_cb.RESET	<= req.RESET;
 		vif.driver_cb.CE 	<= req.CE;
 		vif.driver_cb.CMD	<= req.CMD;
 		vif.driver_cb.MODE	<= req.MODE;
@@ -74,33 +73,25 @@ class alu_driver extends uvm_driver#(alu_seq_item);
 					req.MODE.rand_mode(1);
 
 					if(req.MODE==1 && (req.CMD inside {9,10})) begin
-						$display("\t HIT BREAK drv : mul");
 						repeat(4)@(vif.driver_cb); 
 					end
 					else begin
-						$display("\t HIT BREAK drv : other");
 						repeat(3)@(vif.driver_cb); 
 					end
-
 					break;
 				end //got 11
 
 			end // end for loop
-
 		end //01-10
 
 		else begin // 
 			drive_to_dut();
 			`uvm_info("DRV : ", $sformatf("RESET = %b | CE = %b| MODE = %b| CMD = %0d| INP_VALID = %0d| OPA = %0d| OPB = %0d| CIN = %b",vif.RESET, req.CE, req.MODE, req.CMD, req.INP_VALID, req.OPA, req.OPB, req.CIN), UVM_LOW);
 			drv_port.write(req);
-			//$display("\t\t got 11 out of 16 cycle");
 			if(req.MODE==1 && (req.CMD inside {9,10})) begin
-				//$display("drv : mul");				
 				repeat(4)@(vif.driver_cb); 
-				
 			end
 			else begin
-				//$display("drv : other");
 				repeat(3)@(vif.driver_cb); 
 			end
 
