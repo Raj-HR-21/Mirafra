@@ -36,10 +36,11 @@ class alu_seq_item extends uvm_sequence_item;
 		`uvm_field_int(L,UVM_ALL_ON)
 	`uvm_object_utils_end
 	
+
 	//Write constraints
 	constraint clk_en { CE dist {1:=85, 0:=20};}
 	constraint mode_10{ MODE dist {1:=50, 0:=50};}
-	constraint input_valid { INP_VALID dist {0:=10, [1:2]:=20, 3:=70} ;}
+	constraint input_valid { INP_VALID dist {0:=10, [1:2]:=20, 3:=50} ;}
 	constraint oprtn_cmd {	if(MODE == 1) CMD inside {[0:15]};
 				else CMD inside {[0:15]};}
 
@@ -47,6 +48,8 @@ class alu_seq_item extends uvm_sequence_item;
 	constraint a { OPA inside {[0:255]};}
 	constraint b { OPB inside {[0:255]};}
 	
+
+
 	function new(string name = "alu_seq_item");
 		super.new(name);
 	endfunction
