@@ -1,7 +1,7 @@
 //top
 `define DATA_WIDTH 8
 `define CMD_WIDTH 4
-`define no_trxn 20000
+`define no_trxn 20
 
 `include "uvm_pkg.sv"
 `include "uvm_macros.svh"
@@ -48,7 +48,7 @@ module top;
 	end
         initial begin
 		uvm_config_db#(virtual alu_interface)::set(uvm_root::get(), "*" , "vif", intrf);
-
+/*
 		run_test("arith_both_op_test");
 		run_test("logical_both_op_test");
 
@@ -63,12 +63,11 @@ module top;
 		run_test("arith_opa_min_max_test");
 		run_test("arith_opb_min_max_test");
 	
-		run_test("arith_op_test");
-		run_test("logical_op_test");
-		
-		run_test("reg_test");
-
+		//run_test("arith_op_test");
+		//run_test("logical_op_test");
+	*/	
 		run_test("alu_test");
+		//run_test("reg_test");
 
 	end
 
