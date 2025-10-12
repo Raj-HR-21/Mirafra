@@ -1,7 +1,8 @@
+
 //// Write
 class wr_driver extends uvm_driver#(seq_item);
 	`uvm_component_utils(wr_driver)
-	virtual wr_interface wvif;
+	virtual asy_fifo_interface vif;
 
 	function new(string name = "wr_driver", uvm_component parent = null);
 		super.new(name, parent);
@@ -9,10 +10,12 @@ class wr_driver extends uvm_driver#(seq_item);
 
 	function void build_phase(uvm_phase phase);
 		super.build_phase(phase);
-		uvm_config_db#(virtual wr_interface)::get(this, "", "wintf", wvif); 
+		if(!uvm_config_db#(virtual asy_fifo_interface)::get(this, "", "intf", vif))
+			`uvm_error(get_type_name(), "----- NO VIF -----");	
 	endfunction: build_phase
 
 	task run_phase(uvm_phase phase);
+	super.run_phase(phase);
 	forever begin
 		seq_item_port.get_next_item(req);
 		drive_wr();
@@ -21,20 +24,18 @@ class wr_driver extends uvm_driver#(seq_item);
 	endtask: run_phase
 
 	task drive_wr();
-		repeat(1)@(wvif.wr_drv_cb);
-		 wvif.wdata <= req.wdata ;
-		 wvif.winc  <= req.winc;
-		$display("");
-		`uvm_info("W_DRV", $sformatf("WDATA = %0d | WINC = %0d", req.wdata, req.winc), UVM_NONE)
-		//repeat(1)@(wvif.wr_drv_cb);
-
+		repeat(1)@(vif.wr_drv_cb);
+			 vif.wdata <= req.wdata ;
+			 vif.winc  <= req.winc;
+			$display("");
+			`uvm_info("W_DRV", $sformatf("WDATA = %0d | WINC = %0d", req.wdata, req.winc), UVM_NONE)
 	endtask: drive_wr
-
 endclass: wr_driver
+
 //// Read
 class rd_driver extends uvm_driver#(seq_item);
 	`uvm_component_utils(rd_driver)
-	virtual rd_interface rvif;
+	virtual asy_fifo_interface vif;
 
 	function new(string name = "rd_driver", uvm_component parent = null);
 		super.new(name, parent);
@@ -42,10 +43,12 @@ class rd_driver extends uvm_driver#(seq_item);
 
 	function void build_phase(uvm_phase phase);
 		super.build_phase(phase);
-		uvm_config_db#(virtual rd_interface)::get(this, "", "rintf", rvif);
+		if(!uvm_config_db#(virtual asy_fifo_interface)::get(this, "", "intf", vif))
+			`uvm_error(get_type_name(), "----- NO VIF -----");	
 	endfunction: build_phase
 
 	task run_phase(uvm_phase phase);
+	super.run_phase(phase);
 	forever begin
 		seq_item_port.get_next_item(req);
 		drive_rd();
@@ -54,13 +57,11 @@ class rd_driver extends uvm_driver#(seq_item);
 	endtask: run_phase
 
 	task drive_rd();
-		repeat(1)@(rvif.rd_drv_cb);
-		rvif.rinc <= req.rinc;
+		repeat(1)@(vif.rd_drv_cb);
+		vif.rinc <= req.rinc;
 		//$display("\n");
 		`uvm_info("R_DRV", $sformatf("RINC = %0d", req.rinc), UVM_NONE)
-		//repeat(1)@(rvif.rd_drv_cb);
 	endtask: drive_rd
 
 endclass: rd_driver
-
 
