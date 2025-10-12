@@ -12,18 +12,20 @@ class asy_fifo_func_cvg extends uvm_component;
 
 	covergroup write_cvg;
 		wr_reset : coverpoint wr_seq.wrst_n{bins wrst[] = {0,1};}
-		wr_data  : coverpoint wr_seq.wdata {bins dataw  = {[0:2**`DSIZE-1]};}
+		wr_data  : coverpoint wr_seq.wdata {bins dataw[5]  = {[0:2**`DSIZE-1]};}
 		wr_full  : coverpoint wr_seq.wfull {bins full[] = {0,1};}
-		wr_winc  : coverpoint wr_seq.winc {bins inc  = {0,1};}
-		c1: cross wr_winc, wr_full;
+		wr_winc  : coverpoint wr_seq.winc {bins incw[]  = {0,1};}
+		wr_winc1 : coverpoint wr_seq.winc {bins winc1  = {0,1};}
+		c1: cross wr_winc1, wr_full;
 	endgroup: write_cvg
 
 	covergroup read_cvg;
 		rd_reset : coverpoint rd_seq.rrst_n{bins rrst[] = {0,1};}
-		rd_data  : coverpoint rd_seq.rdata {bins datar  = {[0:2**`DSIZE-1]};}
+		rd_data  : coverpoint rd_seq.rdata {bins datar[5]  = {[0:2**`DSIZE-1]};}
 		rd_empty : coverpoint rd_seq.rempty{bins empty[]  = {0,1};}
-		rd_rinc  : coverpoint rd_seq.rinc  {bins incr  = {0,1};}
-		c2: cross rd_rinc, rd_empty;
+		rd_rinc  : coverpoint rd_seq.rinc  {bins incr[]  = {0,1};}
+		rd_rinc1 : coverpoint rd_seq.rinc  {bins rinc1  = {0,1};}
+		c2: cross rd_rinc1, rd_empty;
 	endgroup: read_cvg
 
 	function new(string name = "asy_fifo_func_cvg", uvm_component parent = null);
